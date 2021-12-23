@@ -22,6 +22,7 @@ if (isset($_POST['submit'])) {
 
     $result = $conn->query($sql);
 
+
     if ($result == TRUE) {
         echo "New Car is created successfully!";
         # Turnback car page
