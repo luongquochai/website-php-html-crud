@@ -126,34 +126,8 @@
                         <span class="sr-only">Next</span>
                     </a>
                 </div>
-                <!-- Nav -->
-                <!-- <nav>
-                    <ul>
-                        <li><a href="#menu">Menu</a></li>
-                    </ul>
-                </nav> -->
-
             </div>
         </header>
-
-        <!-- Menu -->
-        <!-- <nav id="menu">
-            <h2>Menu</h2>
-            <ul>
-                <li><a href="index.php" class="active">Home</a></li>
-                <li>
-                    <a href="#" class="dropdown-toggle">Information</a>
-
-                    <ul>
-                        <li><a href="information/car.php">Car</a></li>
-                        <li><a href="information/customer.php">Customer</a></li>
-                        <li><a href="information/dealer.php">Dealer</a></li>
-                        <li><a href="information/manufacturer.php">manufacturer</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav> -->
-
         <!-- Main -->
         <div id="main">
             <div class="inner">
