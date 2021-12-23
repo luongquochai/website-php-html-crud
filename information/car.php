@@ -3,7 +3,7 @@ include "../config.php";
 
 if (isset($_POST['search'])) {
     $valueToSearch = $_POST['valueToSearch'];
-    $sql = "SELECT `cid`, `name` as name, `type` as type, `seats`, `year` as year, `price` as price, `status`, `color`, `type_of_fuel`, `manufacturer_date` as `m_date`
+    $sql = "SELECT `cid`, `mid`, `cuid`,  `name` as name, `type` as type, `seats`, `year` as year, `price` as price, `status`, `color`, `type_of_fuel`, `manufacturer_date` as `m_date`
      FROM `car` WHERE CONCAT(`cid`, `name`, `type`, `seats`, `year`, `price`, `color`, `status`, `type_of_fuel`, `manufacturer_date`) LIKE '%$valueToSearch%'";
     $result = filterTable($sql);
 } elseif (isset($_POST['filter'])) {
@@ -12,18 +12,20 @@ if (isset($_POST['search'])) {
     $seats = $_POST['seat-filter'];
     $year = $_POST['year-filter'];
     $price = $_POST['price-filter'];
+    echo $price;
     $status = $_POST['status-filter'];
     $type_of_fuel = $_POST['fuel-filter'];
     $from_date = $_POST['from_date'];
     $to_date = $_POST['to_date'];
 
     if ($name == "" && $type == "" && $seats == "" && $year == "" && $status == "" && $price == 0 && $type_of_fuel == "" && $from_date == "" && $to_date == "") {
-        $sql = "SELECT `cid`, `name` as name, `type` as type, `seats`, `year` as year, `price` as price, `status`, `color`, `type_of_fuel`, `manufacturer_date` as `m_date`
+        $sql = "SELECT `cid`, `mid`, `cuid`,`name` as name, `type` as type, `seats`, `year` as year, `price` as price, `status`, `color`, `type_of_fuel`, `manufacturer_date` as `m_date`
         FROM `car`";
     } else {
-        $sql = "SELECT `cid`, `name` as name, `type` as type, `seats`, `year` as year, `price` as price, `status`, `color`, `type_of_fuel`, `manufacturer_date` as `m_date`
+        #Default
+        $sql = "SELECT `cid`, `mid`, `cuid`, `name` as name, `type` as type, `seats`, `year` as year, `price` as price, `status`, `color`, `type_of_fuel`, `manufacturer_date` as `m_date`
         FROM `car` WHERE 0";
-
+        #-----------#
         if ($name != "") {
             $sql .= " OR `name` = '$name'";
         }
@@ -52,16 +54,12 @@ if (isset($_POST['search'])) {
         } else {
             $sql .= " OR `manufacturer_date` >= '$from_date' AND `manufacturer_date` <= '$to_date'";
         }
-
     }
     /* DEBUG */
     // echo $sql;
-    // exit();
     $result = filterTable($sql);
-    
-
 } else {
-    $sql = 'SELECT `cid`, `name` as name, `type` as type, `seats`, `year` as year, `price` as price, `status`, `color`, `type_of_fuel`, `manufacturer_date` as `m_date` FROM `car`';
+    $sql = 'SELECT `cid`, `mid`, `cuid`, `name` as name, `type` as type, `seats`, `year` as year, `price` as price, `status`, `color`, `type_of_fuel`, `manufacturer_date` as `m_date` FROM `car`';
     $result = filterTable($sql);
 }
 // $result = $conn->query($sql);
@@ -86,40 +84,103 @@ function filterTable($sql)
     <link rel="stylesheet" href="../assets/css/main.css" />
     <style>
         .slidecontainer {
-        width: 100%;
+            width: 100%;
         }
 
         .slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 25px;
-        background: #d3d3d3;
-        outline: none;
-        opacity: 0.7;
-        -webkit-transition: .2s;
-        transition: opacity .2s;
+            -webkit-appearance: none;
+            width: 100%;
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
         }
 
         .slider:hover {
-        opacity: 1;
+            opacity: 1;
         }
 
         .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 25px;
-        height: 25px;
-        background: #04AA6D;
-        cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
         }
 
         .slider::-moz-range-thumb {
-        width: 25px;
-        height: 25px;
-        background: #04AA6D;
-        cursor: pointer;
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
         }
-        
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            width: 100%;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .topnav a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #04AA6D;
+            color: white;
+        }
+
+        .topnav .icon {
+            display: none;
+        }
+
+        @media screen and (max-width: 600px) {
+            .topnav a:not(:first-child) {
+                display: none;
+            }
+
+            .topnav a.icon {
+                float: right;
+                display: block;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .topnav.responsive {
+                position: relative;
+            }
+
+            .topnav.responsive .icon {
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+
+            .topnav.responsive a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+        }
     </style>
     <noscript>
         <link rel="stylesheet" href="../assets/css/noscript.css" />
@@ -135,49 +196,31 @@ function filterTable($sql)
         <header id="header">
             <div class="inner">
 
-                <!-- Logo -->
-                <a href="car.php" class="logo">
-                    <span class="fa fa-car"></span> <span class="title">Show Cars</span>
+                <a href="home.php" class="logo">
+                    <span class="fa fa-car"></span> <span class="title">Show Car</span>
                 </a>
-
-                <!-- Nav -->
-                <nav>
-                    <ul>
-                        <li><a href="#menu">Menu</a></li>
-                    </ul>
-                </nav>
+                <div class="topnav" id="myTopnav">
+                    <a href="../home.php" class="active">Home</a>
+                    <a href="car.php">Car</a>
+                    <a href="dealer.php">Dealer</a>
+                    <a href="customer.php">Customer</a>
+                    <a href="manufacturer.php">Manufacturer</a>
+                    <a href="distribute.php">Distribute</a>
+                    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div><br>
 
             </div>
         </header>
 
-        <!-- Menu -->
-        <!-- Menu -->
-        <nav id="menu">
-            <h2>Menu</h2>
-            <ul>
-                <li><a href="../index.php" class="active">Home</a></li>
-                <li>
-                    <a href="#" class="dropdown-toggle">Information</a>
-
-                    <ul>
-                        <li><a href="car.php">Car</a></li>
-                        <li><a href="customer.php">Customer</a></li>
-                        <li><a href="dealer.php">Dealer</a></li>
-                        <li><a href="manufacturer.php">manufacturer</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
 
         <!-- Main -->
         <div id="main">
             <div class="inner">
                 <h1>Cars</h1>
                 <td>
-                    <!-- <input type="text" class="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name"> -->
-                    <!-- <div class="image main">
-								<img src="../images/banner-image-7-1920x500.jpg" class="img-fluid" alt="" />
-							</div> -->
+
                     <form action="car.php" method="post">
                         <div class="input-group mb-3">
 
@@ -268,7 +311,7 @@ function filterTable($sql)
                                             <?php endfor; ?>
                                         </select>
                                     </div>
-                    
+
                                     <!-- STATUS FILTER  -->
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
@@ -304,7 +347,7 @@ function filterTable($sql)
                                             ?>
                                         </select>
                                     </div>
-                                    
+
                                     <!-- PRICE FILTER FROM 0 -> MAX PRICE IN TABLE -->
                                     <div class="slidecontainer">
                                         <?php
@@ -317,10 +360,10 @@ function filterTable($sql)
                                         // print_r($row_max_price[0]);
                                         echo "<input type='range' name='price-filter' min='0' max='" . $row_max_price[0] . "' value='0' step='100' class='slider' id='myRange'>";
                                         ?>
-                                        <!-- <input type="range" name="price-filter" min="<? echo $row_min_price[0]?>" max="<? echo $row_max_price[0]?>" value="50" step="20" class="slider" id="myRange"> -->
+                                        <!-- <input type="range" name="price-filter" min="<? echo $row_min_price[0] ?>" max="<? echo $row_max_price[0] ?>" value="50" step="20" class="slider" id="myRange"> -->
                                         <p>Price: from 0 - <span id="price"></span>$</p>
                                     </div>
-                                    
+
                                     Manufacture Date
                                     from:
                                     <input type="date" name="from_date" min="2000">
@@ -328,13 +371,13 @@ function filterTable($sql)
                                     <input type="date" name="to_date" min="2000">
 
                                 </fieldset>
-                                    
-                                    <div class="form-group">
-                                        <label class="col-lg-2 control-label"></label>
-                                        <div class="col-lg-4">
-                                            <input type="submit" name="filter" class="btn btn-primary" value="Filter">
-                                        </div>
+
+                                <div class="form-group">
+                                    <label class="col-lg-2 control-label"></label>
+                                    <div class="col-lg-4">
+                                        <input type="submit" name="filter" class="btn btn-primary" value="Filter">
                                     </div>
+                                </div>
                             </form>
                         </div>
 
@@ -377,20 +420,22 @@ function filterTable($sql)
                         }
                     </script>
 
-                    <table id="table" class="myTable" >
+                    <table id="table" class="myTable">
 
                         <head>
                             <tr>
                                 <th onclick="sortTable(0)">ID ▼</th>
-                                <th onclick="sortTable(1)">Name ▼</th>
-                                <th onclick="sortTable(2)">Type ▼</th>
-                                <th onclick="sortTable(3)">Seats ▼</th>
-                                <th onclick="sortTable(4)">Year ▼</th>
-                                <th onclick="sortTable(5)">Color ▼</th>
-                                <th onclick="sortTable(6)">Status ▼</th>
-                                <th onclick="sortTable(7)">Type of fuel ▼</th>
-                                <th onclick="sortTable(8)">Price ▼</th>
-                                <th onclick="sortTable(9)">M-Date ▼</th>
+                                <th onclick="sortTable(1)">MID ▼</th>
+                                <th onclick="sortTable(2)">CUID ▼</th>
+                                <th onclick="sortTable(3)">Name ▼</th>
+                                <th onclick="sortTable(4)">Type ▼</th>
+                                <th onclick="sortTable(5)">Seats ▼</th>
+                                <th onclick="sortTable(6)">Year ▼</th>
+                                <th onclick="sortTable(7)">Color ▼</th>
+                                <th onclick="sortTable(8)">Status ▼</th>
+                                <th onclick="sortTable(9)">Type of fuel ▼</th>
+                                <th onclick="sortTable(10)">Price ▼</th>
+                                <th onclick="sortTable(11)">M-Date ▼</th>
                                 <th>Action</th>
                             </tr>
                         </head>
@@ -401,6 +446,8 @@ function filterTable($sql)
                             ?>
                                     <tr>
                                         <td><?php echo $row['cid']; ?> </td>
+                                        <td><?php echo $row['mid']; ?> </td>
+                                        <td><?php echo $row['cuid']; ?> </td>
                                         <td><?php echo $row['name']; ?> </td>
                                         <td><?php echo $row['type']; ?> </td>
                                         <td><?php echo $row['seats']; ?> </td>
@@ -448,30 +495,28 @@ function filterTable($sql)
                             while (switching) {
                                 switching = false;
                                 var rows = table.rows;
-                                
+
                                 //Loop to go through all rows
                                 for (i = 1; i < (rows.length - 1); i++) {
                                     var Switch = false;
-            
+
                                     // Fetch 2 elements that need to be compared
                                     x = rows[i].getElementsByTagName("TD")[n];
                                     y = rows[i + 1].getElementsByTagName("TD")[n];
-            
+
                                     // Check the direction of order
                                     if (direction == "ascending") {
-            
+
                                         // Check if 2 rows need to be switched
-                                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())
-                                            {
+                                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
                                             // If yes, mark Switch as needed and break loop
                                             Switch = true;
                                             break;
                                         }
                                     } else if (direction == "descending") {
-                                        
+
                                         // Check direction
-                                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase())
-                                            {
+                                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
                                             // If yes, mark Switch as needed and break loop
                                             Switch = true;
                                             break;
@@ -482,7 +527,7 @@ function filterTable($sql)
                                     // Function to switch rows and mark switch as completed
                                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                                     switching = true;
-                                    
+
                                     // Increase count for each switch
                                     count++;
                                 } else {

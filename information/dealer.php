@@ -28,14 +28,11 @@ if (isset($_POST['search'])) {
         if ($topmanager != "") {
             $sql .= " OR `year` = $topmanager";
         }
-
     }
     /* DEBUG */
     // echo $sql;
     // exit();
     $result = filterTable($sql);
-    
-
 } else {
     $sql = 'SELECT * FROM `dealer`';
     $result = filterTable($sql);
@@ -62,40 +59,104 @@ function filterTable($sql)
     <link rel="stylesheet" href="../assets/css/main.css" />
     <style>
         .slidecontainer {
-        width: 100%;
+            width: 100%;
         }
 
         .slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 25px;
-        background: #d3d3d3;
-        outline: none;
-        opacity: 0.7;
-        -webkit-transition: .2s;
-        transition: opacity .2s;
+            -webkit-appearance: none;
+            width: 100%;
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
         }
 
         .slider:hover {
-        opacity: 1;
+            opacity: 1;
         }
 
         .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 25px;
-        height: 25px;
-        background: #04AA6D;
-        cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
         }
 
         .slider::-moz-range-thumb {
-        width: 25px;
-        height: 25px;
-        background: #04AA6D;
-        cursor: pointer;
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
         }
-        
+
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            width: 100%;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .topnav a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #04AA6D;
+            color: white;
+        }
+
+        .topnav .icon {
+            display: none;
+        }
+
+        @media screen and (max-width: 600px) {
+            .topnav a:not(:first-child) {
+                display: none;
+            }
+
+            .topnav a.icon {
+                float: right;
+                display: block;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .topnav.responsive {
+                position: relative;
+            }
+
+            .topnav.responsive .icon {
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+
+            .topnav.responsive a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+        }
     </style>
     <noscript>
         <link rel="stylesheet" href="../assets/css/noscript.css" />
@@ -110,40 +171,24 @@ function filterTable($sql)
         <!-- Header -->
         <header id="header">
             <div class="inner">
-
-                <!-- Logo -->
-                <a href="dealer.php" class="logo">
-                    <span class="fa fa-car"></span> <span class="title">Show Dealers</span>
+                <a href="home.php" class="logo">
+                    <span class="fa fa-car"></span> <span class="title">Show Dealer</span>
                 </a>
+                <div class="topnav" id="myTopnav">
+                    <a href="../home.php" class="active">Home</a>
+                    <a href="car.php">Car</a>
+                    <a href="dealer.php">Dealer</a>
+                    <a href="customer.php">Customer</a>
+                    <a href="manufacturer.php">Manufacturer</a>
+                    <a href="distribute.php">Distribute</a>
+                    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div><br>
 
-                <!-- Nav -->
-                <nav>
-                    <ul>
-                        <li><a href="#menu">Menu</a></li>
-                    </ul>
-                </nav>
 
             </div>
         </header>
-
-        <!-- Menu -->
-        <!-- Menu -->
-        <nav id="menu">
-            <h2>Menu</h2>
-            <ul>
-                <li><a href="../index.php" class="active">Home</a></li>
-                <li>
-                    <a href="#" class="dropdown-toggle">Information</a>
-
-                    <ul>
-                        <li><a href="car.php">Car</a></li>
-                        <li><a href="customer.php">Customer</a></li>
-                        <li><a href="dealer.php">Dealer</a></li>
-                        <li><a href="manufacturer.php">manufacturer</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
 
         <!-- Main -->
         <div id="main">
@@ -249,13 +294,13 @@ function filterTable($sql)
                                     </div>
 
                                 </fieldset>
-                                    
-                                    <div class="form-group">
-                                        <label class="col-lg-2 control-label"></label>
-                                        <div class="col-lg-4">
-                                            <input type="submit" name="filter" class="btn btn-primary" value="Filter">
-                                        </div>
+
+                                <div class="form-group">
+                                    <label class="col-lg-2 control-label"></label>
+                                    <div class="col-lg-4">
+                                        <input type="submit" name="filter" class="btn btn-primary" value="Filter">
                                     </div>
+                                </div>
                             </form>
                         </div>
 
@@ -298,7 +343,7 @@ function filterTable($sql)
                         }
                     </script>
 
-                    <table id="table" class="myTable" >
+                    <table id="table" class="myTable">
 
                         <head>
                             <tr>
@@ -367,30 +412,28 @@ function filterTable($sql)
                             while (switching) {
                                 switching = false;
                                 var rows = table.rows;
-                                
+
                                 //Loop to go through all rows
                                 for (i = 1; i < (rows.length - 1); i++) {
                                     var Switch = false;
-            
+
                                     // Fetch 2 elements that need to be compared
                                     x = rows[i].getElementsByTagName("TD")[n];
                                     y = rows[i + 1].getElementsByTagName("TD")[n];
-            
+
                                     // Check the direction of order
                                     if (direction == "ascending") {
-            
+
                                         // Check if 2 rows need to be switched
-                                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())
-                                            {
+                                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
                                             // If yes, mark Switch as needed and break loop
                                             Switch = true;
                                             break;
                                         }
                                     } else if (direction == "descending") {
-                                        
+
                                         // Check direction
-                                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase())
-                                            {
+                                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
                                             // If yes, mark Switch as needed and break loop
                                             Switch = true;
                                             break;
@@ -401,7 +444,7 @@ function filterTable($sql)
                                     // Function to switch rows and mark switch as completed
                                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                                     switching = true;
-                                    
+
                                     // Increase count for each switch
                                     count++;
                                 } else {
